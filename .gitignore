@@ -1,0 +1,4 @@
+*.tif
+target/test_data/GF1_PMS1_E81_4_N43_9_20160906_snyDov_LS_DN_Part_0_3.tif
+*.png
+target/test_dataee/2.png
