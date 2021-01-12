@@ -84,11 +84,7 @@ public class PyTorchClient {
         // 获取数组宽度和高度
         int width = rgbArray[0].length;
         int height = rgbArray.length;
-        // 将二维数组转换为一维数组
-        // int[] data = new int[width*height];
-        // for(int i = 0; i < height; i++)
-        //  for(int j = 0; j < width; j++)
-        //   data[i*width + j] = (int)(rgbArray[i][j]);
+
         // 将数据写入BufferedImage
         BufferedImage bf = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
         int frontCol = new Color(0, 245, 255).getRGB();
