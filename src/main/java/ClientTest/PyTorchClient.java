@@ -58,14 +58,8 @@ public class PyTorchClient {
         return content;
     }
 
-    public PredictionProtos.SeldonMessage getRequest(File file,int Id) {
-        byte[] content = new byte[0];
-        try {
-            content = readImageFile(file);
-            System.out.println("length: " + content.length);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public PredictionProtos.SeldonMessage getRequest(byte[] content,int Id) {
+       
         ByteString bsdata = ByteString.copyFrom(content);
 
         Map<String, Value> tagsMap = new HashMap<>(1);
@@ -136,15 +130,22 @@ public class PyTorchClient {
     }
 
     public static void client(WpaiDLPredictOnlineServiceGrpc.WpaiDLPredictOnlineServiceBlockingStub blockingStub,int taskId,String imagePath,String savePath){
-        //String imagePath = "target/test_data";
-        // if (CommonUtil.checkSystemIsWin()){
-        //     imagePath = "demo\\model\\pytorch\\mnist\\test_dataee";
-        // }
+
         System.out.println(System.getProperty("user.dir"));
         PyTorchClient pyTorchClient = new PyTorchClient();
         File dataDir = new File(imagePath);
         for (File file : dataDir.listFiles()) {
-            PredictionProtos.SeldonMessage request = pyTorchClient.getRequest(file,taskId);
+            byte[] content = new byte[0];
+            try {
+                content = readImageFile(file);
+                System.out.println("length: " + content.length);
+                if (content.length <3000 | content.length > 700000){
+                    continue;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            PredictionProtos.SeldonMessage request = pyTorchClient.getRequest(content,taskId);
             PredictionProtos.SeldonMessage response = blockingStub.withDeadlineAfter(10000000, TimeUnit.MILLISECONDS).pytorchPredict(request);
             pyTorchClient.saveResult(response,file.getName(),savePath);
         }
