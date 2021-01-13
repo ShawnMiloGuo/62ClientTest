@@ -43,12 +43,14 @@ public class WpaiClient {
      * greeting.
      */
     public static void main(String [] args) {
-        args = new String [2];
-        args[0]="10.10.1.62";
-        args[1]="50050";
-        int argsLength = 2;
+      /**
+       ip: args[0]="10.10.1.62";
+       port: args[1]="50050";
+       taskid: args[2]=67
+      **/
+        int argsLength = 3;
         if (args.length < argsLength){
-            System.out.println("arge error, args example: ip port");
+            System.out.println("arge error, args example: ip port taskid");
             System.exit(1);
         }
         String ip = args[0];
@@ -58,10 +60,14 @@ public class WpaiClient {
         } catch (Exception e){
             System.err.println("Integer.parseInt args[1] error, args[1] is " + args[1]);
         }
+        int taskId = Integer.parseInt(args[2]);
+        String imagePath = args[3];
+        String savePath = args[4];
+
         WpaiClient client = new WpaiClient(ip, port);
         String user = "world";
         try {
-            client.greet(user);
+            client.greet(user,taskId,imagePath,savePath);
             client.shutdown();
         } catch (InterruptedException e) {
             System.err.println("InterruptedException, msg=" + e.getMessage());
@@ -82,8 +88,8 @@ public class WpaiClient {
         async = WpaiDLPredictOnlineServiceGrpc.newStub(channel);
     }
 
-    public void greet(String name) {
-        PyTorchClient.client(blockingStub);
+    public void greet(String name,int taskId,String imagePath,String savePath) {
+        PyTorchClient.client(blockingStub,taskId,imagePath,savePath);
     }
 
     public void shutdown() throws InterruptedException {

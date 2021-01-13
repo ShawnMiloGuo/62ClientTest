@@ -58,7 +58,7 @@ public class PyTorchClient {
         return content;
     }
 
-    public PredictionProtos.SeldonMessage getRequest(File file) {
+    public PredictionProtos.SeldonMessage getRequest(File file,int Id) {
         byte[] content = new byte[0];
         try {
             content = readImageFile(file);
@@ -69,7 +69,7 @@ public class PyTorchClient {
         ByteString bsdata = ByteString.copyFrom(content);
 
         Map<String, Value> tagsMap = new HashMap<>(1);
-        Value taskId = Value.newBuilder().setNumberValue(67).build();
+        Value taskId = Value.newBuilder().setNumberValue(Id).build();
         tagsMap.put("taskid", taskId);
 
         PredictionProtos.Meta meta = PredictionProtos.Meta.newBuilder().putAllTags(tagsMap).build();
@@ -81,11 +81,11 @@ public class PyTorchClient {
     }
 
     public static void writeImageFromArray(String imageFile, String type, double[][] rgbArray){
-        // 获取数组宽度和高度
+        // get image width and height
         int width = rgbArray[0].length;
         int height = rgbArray.length;
 
-        // 将数据写入BufferedImage
+        // write data to BufferedImage
         BufferedImage bf = new BufferedImage(width, height, BufferedImage.TYPE_INT_BGR);
         int frontCol = new Color(0, 245, 255).getRGB();
         int backCol = new Color(0, 0, 0).getRGB();
@@ -99,7 +99,7 @@ public class PyTorchClient {
             }
         }
 
-        // 输出图片
+        // write image
         try {
          File file= new File(imageFile);
          ImageIO.write((RenderedImage)bf, type, file);
@@ -107,14 +107,14 @@ public class PyTorchClient {
          e.printStackTrace();
         }
        }
-    public void saveResult(PredictionProtos.SeldonMessage response, String img_name) {
+    public void saveResult(PredictionProtos.SeldonMessage response, String img_name,String savePath) {
         if (response != null) {
 
             try {
                 int dotIndex = img_name.lastIndexOf('.');
                 img_name = (dotIndex == -1) ? img_name : img_name.substring(0, dotIndex);
                 
-                String file_name = "target/result/" + img_name + ".png";
+                String file_name = savePath + '/' + img_name + ".png";
                 List<Double> temp = response.getData().getTensor().getValuesList();
                 int width = 256;
                 int height = 256;
@@ -135,18 +135,18 @@ public class PyTorchClient {
         }
     }
 
-    public static void client(WpaiDLPredictOnlineServiceGrpc.WpaiDLPredictOnlineServiceBlockingStub blockingStub){
-        String imagePath = "target/test_data";
-        if (CommonUtil.checkSystemIsWin()){
-            imagePath = "demo\\model\\pytorch\\mnist\\test_dataee";
-        }
+    public static void client(WpaiDLPredictOnlineServiceGrpc.WpaiDLPredictOnlineServiceBlockingStub blockingStub,int taskId,String imagePath,String savePath){
+        //String imagePath = "target/test_data";
+        // if (CommonUtil.checkSystemIsWin()){
+        //     imagePath = "demo\\model\\pytorch\\mnist\\test_dataee";
+        // }
         System.out.println(System.getProperty("user.dir"));
         PyTorchClient pyTorchClient = new PyTorchClient();
         File dataDir = new File(imagePath);
         for (File file : dataDir.listFiles()) {
-            PredictionProtos.SeldonMessage request = pyTorchClient.getRequest(file);
+            PredictionProtos.SeldonMessage request = pyTorchClient.getRequest(file,taskId);
             PredictionProtos.SeldonMessage response = blockingStub.withDeadlineAfter(10000000, TimeUnit.MILLISECONDS).pytorchPredict(request);
-            pyTorchClient.saveResult(response,file.getName());
+            pyTorchClient.saveResult(response,file.getName(),savePath);
         }
     }
     
