@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,12 +131,15 @@ public class PyTorchClient {
     }
 
     public static void client(WpaiDLPredictOnlineServiceGrpc.WpaiDLPredictOnlineServiceBlockingStub blockingStub,int taskId,String imagePath,String savePath){
-
+      
         System.out.println(System.getProperty("user.dir"));
         PyTorchClient pyTorchClient = new PyTorchClient();
         File dataDir = new File(imagePath);
-        for (File file : dataDir.listFiles()) {
+        List<String> dataPathlist = new ArrayList<>();
+        listDir(dataDir,dataPathlist);
+        for (String filePath : dataPathlist ){
             byte[] content = new byte[0];
+            File file = new File(filePath);
             try {
                 content = readImageFile(file);
                 System.out.println("length: " + content.length);
@@ -147,8 +151,44 @@ public class PyTorchClient {
             }
             PredictionProtos.SeldonMessage request = pyTorchClient.getRequest(content,taskId);
             PredictionProtos.SeldonMessage response = blockingStub.withDeadlineAfter(10000000, TimeUnit.MILLISECONDS).pytorchPredict(request);
-            pyTorchClient.saveResult(response,file.getName(),savePath);
+            String [] sFilePath = filePath.split("/",0);
+            int num =sFilePath.length;
+            
+            String savePath2=savePath+'/'+sFilePath[num-3]+'/'+sFilePath[num-2];
+            File path =new File(savePath2);
+            //如果文件夹不存在则创建    
+            if  (!path .exists()  && !path .isDirectory())      
+            {       
+                path .mkdir();    
+            } 
+            pyTorchClient.saveResult(response,file.getName(),savePath2);
         }
     }
     
+        /**
+     * 列出当前路径下的所有文件路径
+     * @param file
+     */
+    public static void listDir(File file,List<String> list){
+        if(file.isDirectory()){	 // 是一个目录
+            // 列出目录中的全部内容
+            File results[] = file.listFiles();
+            if(results != null){
+                for(int i=0;i<results.length;i++){
+                    listDir(results[i],list);	// 继续一次判断
+                }
+            }
+        }else{	// 是文件
+            String fileStr = (file.getName()).toString();
+            String fileFormat = "tif";
+            String suffixStr = "";
+            if(null != fileStr && !"".equals(fileStr)){
+                suffixStr = fileStr.substring(fileStr.lastIndexOf(".")+1,
+                        fileStr.length());
+                if(fileFormat.toUpperCase().indexOf(suffixStr.toUpperCase()) != -1){
+                   list.add(file.getPath());
+                }
+            }
+        }
+    }
 }

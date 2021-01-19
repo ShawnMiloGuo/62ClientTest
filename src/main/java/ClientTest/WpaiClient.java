@@ -20,6 +20,8 @@ import com.bj58.ailab.dlpredictonline.grpc.WpaiDLPredictOnlineServiceGrpc;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,6 +50,13 @@ public class WpaiClient {
        port: args[1]="50050";
        taskid: args[2]=67
       **/
+    //   args = new String [5];
+    //   args[0]="10.10.1.62";
+    //   args[1]="50050";
+    //   args[2]="4";
+    //   args[3]= "/home/guoshanxin/Work/TestTiles/";
+    //   args[4]= "/home/guoshanxin/code/ClientTest/target/result";
+
         int argsLength = 3;
         if (args.length < argsLength){
             System.out.println("arge error, args example: ip port taskid");
