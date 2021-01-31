@@ -156,12 +156,12 @@ public class PyTorchClient {
             
             String savePath2=savePath+'/'+sFilePath[num-3]+'/'+sFilePath[num-2];
             File path =new File(savePath2);
-            //如果文件夹不存在则创建    
-            if  (!path .exists()  && !path .isDirectory())      
-            {       
-                path .mkdir();    
+            // 如果文件夹不存在则创建
+            if  (!path .exists()  && !path .isDirectory())  {       
+                path .mkdirs();    
             } 
-            pyTorchClient.saveResult(response,file.getName(),savePath2);
+               pyTorchClient.saveResult(response,file.getName(),savePath2);  
+           
         }
     }
     

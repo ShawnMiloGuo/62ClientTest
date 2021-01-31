@@ -45,11 +45,7 @@ public class WpaiClient {
      * greeting.
      */
     public static void main(String [] args) {
-      /**
-       ip: args[0]="10.10.1.62";
-       port: args[1]="50050";
-       taskid: args[2]=67
-      **/
+
     //   args = new String [5];
     //   args[0]="10.10.1.62";
     //   args[1]="50050";
