@@ -108,8 +108,16 @@ public class PyTorchClient {
             try {
                 int dotIndex = img_name.lastIndexOf('.');
                 img_name = (dotIndex == -1) ? img_name : img_name.substring(0, dotIndex);
+                String file_name = "";
+                //windows
+                if (CommonUtil.checkSystemIsWin()){
+                     file_name = savePath + '\\' + img_name + ".png";
+                }
+                //linux
+                else{
+                     file_name = savePath + '/' + img_name + ".png";
+                }
                 
-                String file_name = savePath + '/' + img_name + ".png";
                 List<Double> temp = response.getData().getTensor().getValuesList();
                 int width = 256;
                 int height = 256;
@@ -137,12 +145,14 @@ public class PyTorchClient {
         File dataDir = new File(imagePath);
         List<String> dataPathlist = new ArrayList<>();
         listDir(dataDir,dataPathlist);
+        double i = 1.0;
         for (String filePath : dataPathlist ){
+            long startTime = System.currentTimeMillis();
             byte[] content = new byte[0];
             File file = new File(filePath);
             try {
                 content = readImageFile(file);
-                System.out.println("length: " + content.length);
+                //System.out.println("length: " + content.length);
                 if (content.length <3000 | content.length > 700000){
                     continue;
                 }
@@ -151,17 +161,30 @@ public class PyTorchClient {
             }
             PredictionProtos.SeldonMessage request = pyTorchClient.getRequest(content,taskId);
             PredictionProtos.SeldonMessage response = blockingStub.withDeadlineAfter(10000000, TimeUnit.MILLISECONDS).pytorchPredict(request);
-            String [] sFilePath = filePath.split("/",0);
+
+            String separator = "/|\\\\";
+            String [] sFilePath = filePath.split(separator,0);
             int num =sFilePath.length;
-            
-            String savePath2=savePath+'/'+sFilePath[num-3]+'/'+sFilePath[num-2];
+            //windows
+            String savePath2="";
+            if (CommonUtil.checkSystemIsWin()){
+            savePath2=savePath+'\\'+sFilePath[num-3]+'\\'+sFilePath[num-2];
+            }
+            //linux
+            else{
+            savePath2=savePath+'/'+sFilePath[num-3]+'/'+sFilePath[num-2];    
+            }
+
             File path =new File(savePath2);
-            // 如果文件夹不存在则创建
+            // if no folder exist, create it 
             if  (!path .exists()  && !path .isDirectory())  {       
                 path .mkdirs();    
             } 
-               pyTorchClient.saveResult(response,file.getName(),savePath2);  
-           
+            pyTorchClient.saveResult(response,file.getName(),savePath2);  
+            long endTime = System.currentTimeMillis();
+             
+            System.out.println("completed "+ i/dataPathlist.size()*100 +"%: (time:" +(endTime - startTime)+ " ms): "+filePath);
+            i++;
         }
     }
     
