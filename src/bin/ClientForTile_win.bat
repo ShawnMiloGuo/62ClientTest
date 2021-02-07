@@ -1,1 +1,1 @@
-java -classpath ClientTest-1.0.jar;dlpredictonline-0.0.1-SNAPSHOT.jar;\lib\*.jar ClientTest.WpaiClient 10.10.1.62 50050 4 E:\Result\Geoserver\Code\06_DockerClient\TestData E:\Result\Geoserver\Code\06_DockerClient\Result
+java -classpath ClientTest-1.0.jar;dlpredictonline-0.0.1-SNAPSHOT.jar;\lib\*.jar ClientTest.WpaiClient 10.10.1.62 50050 4 E:\Result\Geoserver\Code\06_DockerClient\TestData E:\Result\Geoserver\Code\06_DockerClient\Result false
