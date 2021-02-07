@@ -138,7 +138,7 @@ public class PyTorchClient {
         }
     }
 
-    public static void client(WpaiDLPredictOnlineServiceGrpc.WpaiDLPredictOnlineServiceBlockingStub blockingStub,int taskId,String imagePath,String savePath){
+    public static void client(WpaiDLPredictOnlineServiceGrpc.WpaiDLPredictOnlineServiceBlockingStub blockingStub,int taskId,String imagePath,String savePath,Boolean sendDataBoolean){
       
         System.out.println(System.getProperty("user.dir"));
         PyTorchClient pyTorchClient = new PyTorchClient();
@@ -156,6 +156,12 @@ public class PyTorchClient {
                 if (content.length <3000 | content.length > 700000){
                     continue;
                 }
+                // Only send the filepath to server if SendDateBoolean is false
+                if (sendDataBoolean = false){
+                   // Only send the filepath to server
+                   content = imagePath.getBytes();
+                }
+
             } catch (IOException e) {
                 e.printStackTrace();
             }

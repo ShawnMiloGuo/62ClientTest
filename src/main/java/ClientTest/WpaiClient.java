@@ -52,6 +52,7 @@ public class WpaiClient {
     //   args[2]="4";
     //   args[3]= "/home/guoshanxin/Work/TestTiles/";
     //   args[4]= "/home/guoshanxin/code/ClientTest/target/result";
+    //   args[5]= false
 
         int argsLength = 5;
         if (args.length < argsLength){
@@ -68,11 +69,17 @@ public class WpaiClient {
         int taskId = Integer.parseInt(args[2]);
         String imagePath = args[3];
         String savePath = args[4];
+        Boolean sendDataBoolean = true;
+        try {
+            sendDataBoolean = Boolean.parseBoolean(args[5]);
+        } catch (Exception e){
+            System.err.println("Boolean.parseBoolean args[5] error, args[5] is " + args[5]);
+        }
 
         WpaiClient client = new WpaiClient(ip, port);
         String user = "world";
         try {
-            client.greet(user,taskId,imagePath,savePath);
+            client.greet(user,taskId,imagePath,savePath,sendDataBoolean);
             client.shutdown();
         } catch (InterruptedException e) {
             System.err.println("InterruptedException, msg=" + e.getMessage());
@@ -93,8 +100,8 @@ public class WpaiClient {
         async = WpaiDLPredictOnlineServiceGrpc.newStub(channel);
     }
 
-    public void greet(String name,int taskId,String imagePath,String savePath) {
-        PyTorchClient.client(blockingStub,taskId,imagePath,savePath);
+    public void greet(String name,int taskId,String imagePath,String savePath,Boolean sendDataBoolean) {
+        PyTorchClient.client(blockingStub,taskId,imagePath,savePath,sendDataBoolean);
     }
 
     public void shutdown() throws InterruptedException {
