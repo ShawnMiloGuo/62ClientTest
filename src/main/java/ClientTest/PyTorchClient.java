@@ -150,24 +150,28 @@ public class PyTorchClient {
             long startTime = System.currentTimeMillis();
             byte[] content = new byte[0];
             File file = new File(filePath);
-            try {
-                content = readImageFile(file);
-                //System.out.println("length: " + content.length);
-                if (content.length <3000 | content.length > 700000){
-                    continue;
+             // Only send the filepath to server if SendDateBoolean is false
+            if (sendDataBoolean = false){
+                // Only send the filepath to server
+                content = filePath.getBytes();
+            }else {
+                // Send the data to server
+                try {
+                    content = readImageFile(file);
+                    //System.out.println("length: " + content.length);
+                    if (content.length <3000 | content.length > 700000){
+                        continue;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                // Only send the filepath to server if SendDateBoolean is false
-                if (sendDataBoolean = false){
-                   // Only send the filepath to server
-                   content = imagePath.getBytes();
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
             }
+            
+            // Call gRPC method
             PredictionProtos.SeldonMessage request = pyTorchClient.getRequest(content,taskId);
             PredictionProtos.SeldonMessage response = blockingStub.withDeadlineAfter(10000000, TimeUnit.MILLISECONDS).pytorchPredict(request);
-
+            
+            // Set up the saving folder and structure
             String separator = "/|\\\\";
             String [] sFilePath = filePath.split(separator,0);
             int num =sFilePath.length;
