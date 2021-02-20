@@ -46,13 +46,13 @@ public class WpaiClient {
      */
     public static void main(String [] args) {
 
-    //   args = new String [5];
-    //   args[0]="10.10.1.62";
-    //   args[1]="50050";
-    //   args[2]="4";
-    //   args[3]= "/home/guoshanxin/Work/TestTiles/";
-    //   args[4]= "/home/guoshanxin/code/ClientTest/target/result";
-    //   args[5]= false
+    //    args = new String [6];
+    //    args[0]="10.10.1.62";
+    //    args[1]="50050";
+    //    args[2]="4";
+    //    args[3]= "/home/guoshanxin/Work/TestTiles/";
+    //    args[4]= "/home/guoshanxin/code/ClientTest/target/result";
+    //    args[5]= "false";
 
         int argsLength = 5;
         if (args.length < argsLength){

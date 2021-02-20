@@ -151,7 +151,7 @@ public class PyTorchClient {
             byte[] content = new byte[0];
             File file = new File(filePath);
              // Only send the filepath to server if SendDateBoolean is false
-            if (sendDataBoolean = false){
+            if (sendDataBoolean == false){
                 // Only send the filepath to server
                 content = filePath.getBytes();
             }else {
