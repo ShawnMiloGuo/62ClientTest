@@ -79,3 +79,26 @@ java -classpath $libs ClientTest.WpaiClient 210.75.252.106 10151 4 /home/guoshan
 java -classpath ClientTest-1.0.jar;dlpredictonline-0.0.1-SNAPSHOT.jar;\lib\*.jar ClientTest.WpaiClient 210.75.252.106 10151 4 E:\Result\Geoserver\Code\06_DockerClient\TestTiles E:\Result\Geoserver\Code\06_DockerClient\Result false
 ```
 其中参数顺序与linux中的含义是一致的。
+
+# 服务列表
+``` bash
+# this file reconds the all available deeplearning network for Land cover classification
+# taskId = Max Time, IP : Port # explations
+
+1=1000,10.10.1.62:8801 # bareland GF2-NRG Unet
+2=1000,10.10.1.62:8802 # bareland TM-NRG Unet
+3=1000,10.10.1.62:8803 # city GF1-RGB SegNet
+4=1000,10.10.1.62:8804 # farmland GF1_All HRUNet
+5=1000,10.10.1.62:8805 # farmland GF2_ALL HRUNet
+6=1000,10.10.1.62:8806 # farmland TM_ALL HRUNet
+7=1000,10.10.1.62:8807 # forest GF1_All HRUNet
+8=1000,10.10.1.62:8808 # forest GF2_NRG Unet
+9=1000,10.10.1.62:8809 # garden GF1_All HRUNet
+10=1000,10.10.1.62:8810 # garden GF2_NRG Unet
+11=1000,10.10.1.62:8811 # grassland GF1_All HRUNet
+12=1000,10.10.1.62:8812 # grassland GF2_NRG Unet
+13=1000,10.10.1.62:8813 # grassland TM_NRG Unet
+14=1000,10.10.1.62:8814 # road GF1_RGB Unet
+15=1000,10.10.1.62:8815 # water GF1_All HRUNet
+16=1000,10.10.1.62:8816 # water TM_NRG UNet
+```
